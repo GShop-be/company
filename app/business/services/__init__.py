@@ -1,1 +1,1 @@
-from .account import *
+from app.business.services.account.service import *

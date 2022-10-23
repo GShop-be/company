@@ -1,4 +1,5 @@
-from .business import Business
+from .business import Business, Base
+from .business.services.account.requests import NewAccountRequest
 from .core import Core
 
 __all__ = [
@@ -8,13 +9,19 @@ __all__ = [
 
 class Application:
     def __init__(self):
-        self.core = Core()
+        self.core = Core(Base.metadata)
         self.business = Business(
             self.core.session_maker,
-            self.core.grpc_client,
+            self.core.external_connectors,
         )
 
     async def start(self):
         await self.core.init()
 
-        await self.business.account.add('TEST')
+        await self.business.account.add(NewAccountRequest(
+            account_name='test12',
+            super_user_name='test_super_user',
+            super_user_email='test@test.ru',
+            password='test',
+            repeated_password='test'
+        ))

@@ -1,10 +1,10 @@
 from db_entities.session_maker import SessionMaker
 from db_entities.initilaizer import Initializer
-
-from grpc_entities.client import GRPCClient
 from settings import Settings
 
-from ..business import Base
+from .external_connectors import ExternalConnectors
+
+
 
 
 __all__ = [
@@ -13,7 +13,7 @@ __all__ = [
 
 
 class Core:
-    def __init__(self):
+    def __init__(self, metadata):
         self.session_maker = SessionMaker(
             driver='postgresql+asyncpg',
             user=Settings.db.common.user,
@@ -25,11 +25,11 @@ class Core:
         )
         self._initializer = Initializer(
             self.session_maker,
-            Base.metadata,
+            metadata,
             Settings.ALEMBIC_CONFIG_PATH
         )
 
-        self.grpc_client = GRPCClient()
+        self.external_connectors = ExternalConnectors()
 
     async def init(self):
         await self._initializer.initialize()

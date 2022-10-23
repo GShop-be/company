@@ -1,8 +1,8 @@
 from db_entities.session_maker import SessionMaker
 
-from grpc_entities.client import GRPCClient
-
 from .services import AccountService
+
+from ..core import ExternalConnectors
 
 
 __all__ = [
@@ -12,8 +12,8 @@ __all__ = [
 
 class Business:
     def __init__(
-            self,
-            session_maker: SessionMaker,
-            grpc_client: GRPCClient
+        self,
+        session_maker: SessionMaker,
+        external_connectors: ExternalConnectors
     ):
-        self.account = AccountService(session_maker, grpc_client)
+        self.account = AccountService(session_maker, external_connectors.external_employees)
